@@ -1,0 +1,38 @@
+{
+  "name": "favicons",
+  "version": "0.0.1",
+  "description": "Utility package to get favicons from the web.",
+  "main": "index.js",
+  "scripts": {
+	"build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andresmarpz/favicons.git"
+  },
+  "keywords": [
+    "favicon",
+    "favicons",
+    "external",
+    "url",
+    "site",
+    "web",
+    "get"
+  ],
+  "author": "andresmarpz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andresmarpz/favicons/issues"
+  },
+  "homepage": "https://github.com/andresmarpz/favicons#readme",
+  "devDependencies": {
+    "turbo": "^1.4.6"
+  }
+}
