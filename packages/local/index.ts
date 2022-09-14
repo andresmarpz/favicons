@@ -1,3 +1,3 @@
-import sum from "@andresmarpz/favicons";
+import {processURL} from '@andresmarpz/favicons'
 
-console.log(sum(5, 3))
+console.log(processURL('https://google.com/'))

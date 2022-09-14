@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "local": "npm link @andresmarpz/favicons && ts-node index.ts"
+    "link": "npm link @andresmarpz/favicons",
+	"start": "ts-node index.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
