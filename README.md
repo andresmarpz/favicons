@@ -17,7 +17,7 @@ This repo uses [turborepo](https://turborepo.org) to manage apps and packages in
 | Codebase | Description |
 |:----------|:---------------:|
 | [apps/web](apps/web) | Next.js landing |
-| [packages/favicons](packages/favicons) | npm package |
+| [packages/npm](packages/npm) | npm package |
 | [packages/local](packages/local) | Local testing |
 
 ## Running locally
