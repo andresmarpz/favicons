@@ -4,7 +4,7 @@
 	"version": "0.0.2",
 	"description": "Utility package to get favicons from the web.",
 	"main": "./dist/index.js",
-	"module": "./dist/index.modern.js",
+	"module": "./dist/index.modern.mjs",
 	"types": "./dist/index.d.ts",
 	"source": "./src/index.ts",
 	"files": [
