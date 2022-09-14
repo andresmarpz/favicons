@@ -10,7 +10,9 @@
 		"build": "tsc",
 		"test": "",
 		"dev": "nodemon src/index.ts",
-		"prepublish": "npm test && tsc"
+		"prepublish": "npm test && tsc",
+		"prepack": "tsc",
+		"postpack": "npm link"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.19",

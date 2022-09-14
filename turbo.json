@@ -4,6 +4,10 @@
 		"dev": {
 			"outputs": []
 		},
+		"local": {
+			"outputs": [],
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": [".next/**"]
