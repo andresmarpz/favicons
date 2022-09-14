@@ -12,7 +12,7 @@
 	],
 	"license": "GNU3",
 	"scripts": {
-		"build": "microbundle --compress --no-sourcemap --format modern,cjs",
+		"build": "microbundle build --compress --no-sourcemap --format modern,cjs --tsconfig tsconfig.build.json",
 		"test": "jest",
 		"dev": "nodemon src/index.ts",
 		"start": "ts-node src/index.ts",
