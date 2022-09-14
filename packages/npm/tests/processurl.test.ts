@@ -40,4 +40,8 @@ describe("test processURL(url: string)", () => {
 	it("should remove extra parameters", () => {
 		expect(processURL("https://google.com/?test=1")).toBe("https://google.com");
 	});
+
+	it('should add protocol to url starting with //', () => {
+		expect(processURL("//google.com")).toBe("https://google.com");
+	})
 });
