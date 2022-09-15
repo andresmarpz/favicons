@@ -21,8 +21,9 @@ async function getFavicon(url: string): Promise<Favicon[]> {
 
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
-	await page.goto(url, { waitUntil: "networkidle2", timeout: 10000 });
+	await page.goto(url, { timeout: 10000 });
 
+	const start = Date.now();
 	const scanRel = async(rel: string) => {
 		const hrefs = await page.$$eval(`link[rel="${rel}"]`, (links) => links.map((link) => link.getAttribute("href")));
 		const icons = await Promise.all(hrefs.map(async(href) => {
@@ -32,33 +33,38 @@ async function getFavicon(url: string): Promise<Favicon[]> {
 
 			if (!paths.includes(href)){
 				const resource = await fetch(href);
+				if(!resource.ok || !resource.headers.get("content-type")) return undefined;
+
+				const size = (await resource.buffer()).byteLength;
+				const extension = href.split(".").pop() as Favicon['extension'];
+
 				return {
 					url: href,
-					size: parseInt(resource.headers.get("content-length") || "0"),
-					extension: href.split(".").pop() as Favicon['extension']
+					size,
+					extension
 				} as Favicon;
 			}
 			else return undefined;
 		}));
 
-		return icons.flat()
+		return icons.flat();
 	};
-
+	
 	const scanPath = async(path: string) => {
 		const resource = await fetch(url + path);
 		const contentType = resource.headers.get("content-type");
-		if(!contentType || !(contentType.startsWith("image/") || contentType.startsWith("application/ico"))) return undefined;
-
-		const size = parseInt(resource.headers.get("content-length") || "0");
+		if(!resource.ok || !contentType || !(contentType.startsWith("image/") || contentType.startsWith("application/ico"))) return undefined;
+		
+		const size = (await resource.buffer()).byteLength;
 		const extension = path.split(".").pop() as Favicon["extension"];
-
+		
 		return {
 			url: url + path,
-			size: size,
-			extension: extension,
+			size,
+			extension,
 		} as Favicon;
 	}
-
+	
 	const res = await Promise.all([...rels.map(scanRel), ...paths.map(scanPath)]);
 
 	browser.close();
