@@ -3,99 +3,57 @@ import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { processURL, isRelativeURL } from "./util";
 
-import { scanPath } from "./fetcher";
+import { requestFavicons } from "./fetcher";
 
 import type { Favicon } from './types';
 
 const rels = ["shortcut icon", "icon shortcut", "icon", "apple-touch-icon", "apple-touch-icon-precomposed"];
-const paths = ["/favicon.ico", "/favicon.png", "/favicon.svg", "/apple-touch-icon.png"];
 
-function timeout(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
+interface Options{
+	method?: 'request' | 'browser',
 }
 
-async function getFaviconWithHttp(url: string): Promise<Favicon[]> {
-	const start = Date.now();
-	const html = await fetch(url).then((res) => res.text());
-	console.log("fetch", Date.now() - start);
-
-	const $ = cheerio.load(html);
-	const scanRel = async(rel: string) => {
-		const links = $(`link[rel="${rel}"]`);
-		const hrefs = links.map((i, link) => $(link).attr("href")).get();
-		const icons = await Promise.all(hrefs.map(async(href) => {
-			if(!href) return undefined;
-			if(paths.includes(href)) return undefined;
-			href = processURL(href, false);
-			if(isRelativeURL(href)) href = url + href;
-
-			const res = await fetch(href);
-			if(!res.ok || !res.headers.get("content-type")) return undefined;
-			return {
-				url: href,
-				size: parseInt(res.headers.get("content-length") || '0'),
-				extension: href.split(".").pop() as Favicon["extension"],
-			};
-		}));
-
-		return icons;
-	}
-
-	const favicons = await Promise.all([
-		...rels.map(scanRel),
-		...paths.map(path => scanPath(url, path))
-	])
-
-	console.log(`Took ${Date.now() - start}ms`)
-	return [...new Set(favicons.flat().filter((x): x is Favicon => x !== undefined))]
-}
-
-async function getFaviconWithBrowser(url: string): Promise<Favicon[]> {
+export async function getFavicons(url: string, options: Options = {
+	method: 'request'
+}): Promise<Favicon[]>{
 	// ensure there is a valid url
 	url = processURL(url);
-	const start = Date.now();
 
+	if(isRelativeURL(url)) throw new Error("Only absolute urls are valid.");
+
+	return options.method === 'request' ? 
+		await withRequest(url) :
+		await withBrowser(url);
+}
+
+export async function getFavicon(url: string, {
+	method = 'request',
+}: Options): Promise<Favicon>{
+	const favicons = await getFavicons(url, { method });
+	return favicons.sort((a, b) => b.size - a.size)[0];
+}
+
+async function withRequest(url: string) {
+	const html = await fetch(url).then((res) => res.text());
+
+	const $ = cheerio.load(html);
+	const hrefs = rels.map(rel => {
+		return $(`link[rel="${rel}"]`).map((_, el) => $(el).attr("href")).get();
+	}).flat();
+
+	return requestFavicons(url, hrefs);
+}
+
+async function withBrowser(url: string): Promise<Favicon[]> {
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 	await page.goto(url, { timeout: 10000 });
 
-	const scanRel = async(rel: string) => {
-		const hrefs = await page.$$eval(`link[rel="${rel}"]`, (links) => links.map((link) => link.getAttribute("href")));
-		const icons = await Promise.all(hrefs.map(async(href) => {
-			if(!href) return undefined;
-			href = processURL(href, false);
-			if(isRelativeURL(href)) href = url + href;
-
-			if (!paths.includes(href)){
-				const resource = await fetch(href);
-				if(!resource.ok || !resource.headers.get("content-type")) return undefined;
-
-				const size = (await resource.buffer()).byteLength;
-				const extension = href.split(".").pop() as Favicon['extension'];
-
-				return {
-					url: href,
-					size,
-					extension
-				} as Favicon;
-			}
-			else return undefined;
-		}));
-
-		return icons.flat();
-	};
+	const hrefs = await Promise.all(rels.map(rel => {
+		return page.$$eval(`link[rel="${rel}"]`, els => els.map(el => el.getAttribute("href")));
+	})).then(x => x.flat().filter((x): x is string => x !== null));
 	
-	const res = await Promise.all([
-		...rels.map(scanRel), 
-		...paths.map(path => scanPath(url, path))
-	]);
-
 	browser.close();
 
-	// flatten the array, remove undefined values
-	console.log(`Took ${Date.now() - start}ms`)
-	return res.flat().filter((x): x is Favicon => x !== undefined);
+	return requestFavicons(url, hrefs);
 }
-
-export { processURL, isRelativeURL, getFaviconWithBrowser };
-export default getFaviconWithHttp;
