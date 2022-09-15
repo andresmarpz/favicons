@@ -1,7 +1,7 @@
 {
 	"name": "@andresmarpz/favicons",
 	"author": "andresmarpz",
-	"version": "0.0.2",
+	"version": "0.0.3-beta",
 	"description": "Utility package to get favicons from the web.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.modern.mjs",
@@ -22,8 +22,10 @@
 	},
 	"devDependencies": {
 		"@types/jest": "^29.0.2",
+		"@types/jsdom": "^20.0.0",
 		"@types/node-fetch": "^2.6.2",
 		"@types/puppeteer": "^5.4.6",
+		"cheerio": "^1.0.0-rc.12",
 		"jest": "^29.0.3",
 		"microbundle": "^0.15.1",
 		"nodemon": "^2.0.19",
