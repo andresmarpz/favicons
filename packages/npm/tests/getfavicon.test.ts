@@ -1,63 +1,40 @@
-import getFavicon from "../src";
+import { getFavicons } from "../src";
 
 describe("test getFavicon(url: string)", () => {
-	it("should return favicon url for google.com", async () => {
-		const favicons = await getFavicon("google.com");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for google.com with trailing slash", async () => {
-		const favicons = await getFavicon("google.com/");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for google.com with subdomain", async () => {
-		const favicons = await getFavicon("www.google.com");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for google.com with subdomain and trailing slash", async () => {
-		const favicons = await getFavicon("www.google.com/");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for google.com with subdomain and extra trailing slash", async () => {
-		const favicons = await getFavicon("www.google.com///");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for google.com with subdomain parameters", async () => {
-		const favicons = await getFavicon("www.google.com/?test=1");
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicon url for twitter.com", async () => {
-		const favicons = await getFavicon("twitter.com");
+	it('should return favicons from github.com', async() => {
+		const favicons = await getFavicons('github.com');
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 
-	it("should return favicon url for http://twitter.com", async () => {
-		const favicons = await getFavicon("http://twitter.com");
+	it('should return favicons from https://github.com', async() => {
+		const favicons = await getFavicons('https://github.com');
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 
-	it("should return favicon url for https://twitter.com", async () => {
-		const favicons = await getFavicon("https://twitter.com");
+	it('should return favicons from vercel.com/', async() => {
+		const favicons = await getFavicons('vercel.com/');
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 
-	it("should return favicon url for https://twitter.com/", async () => {
-		const favicons = await getFavicon("https://twitter.com/");
+	it('should return favicons from http://radix-ui.com', async() => {
+		const favicons = await getFavicons('http://radix-ui.com');
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 
-	it('should return favicon url for radix-ui.com', async () => {
-		const favicons = await getFavicon('radix-ui.com')
-		expect(favicons.length).toBeGreaterThanOrEqual(1)
+	it('should return favicons from twitter.com/andresmarpz', async() => {
+		const favicons = await getFavicons('twitter.com/andresmarpz');
+		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 
-	it('should return favicon url for github.com', async () => {
-		const favicons = await getFavicon('github.com')
-		expect(favicons.length).toBeGreaterThanOrEqual(1)
+	it('should return favicons from turborepo.org with browser', async() => {
+		const favicons = await getFavicons('turborepo.org', { method: 'browser' });
+		expect(favicons.length).toBeGreaterThanOrEqual(1);
+	})
+
+	it('should return favicons from http://stitches.dev/?test=1 with browser', async() => {
+		const favicons = await getFavicons('http://stitches.dev/?test=1', {
+			method: 'browser'
+		});
+		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
 });
