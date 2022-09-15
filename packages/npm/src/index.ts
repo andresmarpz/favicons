@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
-import processURL from "./util";
+import fetch from 'node-fetch';
+import { processURL, isRelativeURL } from "./util";
 
 const rels = ["shortcut icon", "icon shortcut", "icon", "apple-touch-icon", "apple-touch-icon-precomposed"];
 const paths = ["/favicon.ico", "/favicon.png", "/favicon.svg", "/apple-touch-icon.png"];
@@ -14,60 +15,57 @@ export interface Favicon {
 	extension: "jpg" | "ico" | "svg" | "png";
 }
 
-async function getFavicon(url: string): Promise<any[]> {
+async function getFavicon(url: string): Promise<Favicon[]> {
+	// ensure there is a valid url
 	url = processURL(url);
+
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 	await page.goto(url, { waitUntil: "networkidle2", timeout: 10000 });
 
-	const icons: Favicon[] = [];
+	const scanRel = async(rel: string) => {
+		const hrefs = await page.$$eval(`link[rel="${rel}"]`, (links) => links.map((link) => link.getAttribute("href")));
+		const icons = await Promise.all(hrefs.map(async(href) => {
+			if(!href) return undefined;
+			href = processURL(href, false);
+			if(isRelativeURL(href)) href = url + href;
 
-	const tags = page
-		.evaluate(
-			(rels, paths) => {
-				const urls: Favicon[] = [];
-				rels.forEach((rel: string) =>
-					Array.from(document.querySelectorAll(`link[rel="${rel}"]`)).forEach((el) => {
-						if (!el.getAttribute("href") || paths.includes(el.getAttribute("href")!)) return;
-
-						const imageExtension = el.getAttribute("href")?.split(".").pop() as Favicon["extension"];
-						const imageSize = parseInt(el.getAttribute("sizes")?.split("x")[0] || "0");
-
-						urls.push({
-							url: el.getAttribute("href")!,
-							size: imageSize,
-							extension: imageExtension,
-						});
-					})
-				);
-				return urls;
-			},
-			rels,
-			paths
-		)
-		.then((res) => icons.push(...res));
-
-	const links = paths.map((link) =>
-		browser.newPage().then(async (page) => {
-			const load = await page.goto(url + link, { waitUntil: "networkidle2", timeout: 10000 });
-			if (load?.status() === 200) {
-				const imageExtension = link.split(".").pop() as Favicon["extension"];
-
-				icons.push({
-					url: url + link,
-					size: 0,
-					extension: imageExtension,
-				});
+			if (!paths.includes(href)){
+				const resource = await fetch(href);
+				return {
+					url: href,
+					size: parseInt(resource.headers.get("content-length") || "0"),
+					extension: href.split(".").pop() as Favicon['extension']
+				} as Favicon;
 			}
-		})
-	);
+			else return undefined;
+		}));
 
-	await Promise.all([tags, ...links]);
+		return icons.flat()
+	};
+
+	const scanPath = async(path: string) => {
+		const resource = await fetch(url + path);
+		const contentType = resource.headers.get("content-type");
+		if(!contentType || !(contentType.startsWith("image/") || contentType.startsWith("application/ico"))) return undefined;
+
+		const size = parseInt(resource.headers.get("content-length") || "0");
+		const extension = path.split(".").pop() as Favicon["extension"];
+
+		return {
+			url: url + path,
+			size: size,
+			extension: extension,
+		} as Favicon;
+	}
+
+	const res = await Promise.all([...rels.map(scanRel), ...paths.map(scanPath)]);
 
 	browser.close();
 
-	return icons;
+	// flatten the array, remove undefined values
+	return res.flat().filter((x): x is Favicon => x !== undefined);
 }
 
-export { processURL };
+export { processURL, isRelativeURL };
 export default getFavicon;
