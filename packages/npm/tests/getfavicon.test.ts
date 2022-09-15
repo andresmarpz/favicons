@@ -50,4 +50,14 @@ describe("test getFavicon(url: string)", () => {
 		const favicons = await getFavicon("https://twitter.com/");
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	})
+
+	it('should return favicon url for radix-ui.com', async () => {
+		const favicons = await getFavicon('radix-ui.com')
+		expect(favicons.length).toBeGreaterThanOrEqual(1)
+	})
+
+	it('should return favicon url for github.com', async () => {
+		const favicons = await getFavicon('github.com')
+		expect(favicons.length).toBeGreaterThanOrEqual(1)
+	})
 });
