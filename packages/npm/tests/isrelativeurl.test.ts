@@ -13,6 +13,14 @@ describe('test isRelativeURL(url: string)', () => {
 		expect(isRelativeURL('/test.png')).toBe(true);
 	})
 
+	it('should return false for relative url with // resource', () => {
+		expect(isRelativeURL('//test.png')).toBe(false);
+	})
+
+	it('should return false for relative url with // url', () => {
+		expect(isRelativeURL('//test.com/test.png')).toBe(false);
+	})
+
 	it('should return false for url without protocol', () => {
 		expect(isRelativeURL('google.com')).toBe(false);
 	})
