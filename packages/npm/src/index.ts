@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
+import { fetch } from './util';
 import { processURL, isRelativeURL } from "./util";
 
 import { requestFavicons } from "./fetcher";
@@ -11,16 +11,20 @@ const rels = ["shortcut icon", "icon shortcut", "icon", "apple-touch-icon", "app
 
 interface Options{
 	method?: 'request' | 'browser',
+	timeout?: number,
 }
 
+let timeout = 5000;
 export async function getFavicons(url: string, options: Options = {
-	method: 'request'
+	method: 'request',
+	timeout: 5000
 }): Promise<Favicon[]>{
 	// ensure there is a valid url
 	url = processURL(url);
 
 	if(isRelativeURL(url)) throw new Error("Only absolute urls are valid.");
 
+	if(options.timeout) timeout = options.timeout;
 	return options.method === 'request' ? 
 		await withRequest(url) :
 		await withBrowser(url);
@@ -34,7 +38,9 @@ export async function getFavicon(url: string, {
 }
 
 async function withRequest(url: string) {
-	const html = await fetch(url).then((res) => res.text());
+	const response = await fetch(url, timeout);
+	if(!response.ok) throw new Error(`Failed to fetch ${url}`);
+	const html = await response.text();
 
 	const $ = cheerio.load(html);
 	const hrefs = rels.map(rel => {
