@@ -1,4 +1,4 @@
-import { processURL } from "../src";
+import { processURL } from "../src/util";
 
 describe("test processURL(url: string)", () => {
 	it("should maintain correct url", () => {
@@ -8,6 +8,10 @@ describe("test processURL(url: string)", () => {
 	it("should add protocol", () => {
 		expect(processURL("google.com")).toBe("https://google.com");
 	});
+
+	it('should add protocol 2', () => {
+		expect(processURL('turborepo.org')).toBe('https://turborepo.org');
+	})
 
 	it("should remove trailing slash and add protocol", () => {
 		expect(processURL("google.com/")).toBe("https://google.com");
