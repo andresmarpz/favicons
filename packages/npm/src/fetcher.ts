@@ -6,6 +6,7 @@ const paths = ["/favicon.ico", "/favicon.png", "/favicon.svg", "/apple-touch-ico
 
 async function getFaviconFrom(url: string) {
 	const response = await fetch(url);
+	if(!response || !response.ok) return undefined;
 
 	// ensure there is a valid resource at the target url
 	// and that it's an image

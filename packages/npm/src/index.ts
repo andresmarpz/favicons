@@ -14,20 +14,23 @@ interface Options{
 	timeout?: number,
 }
 
-let timeout = 5000;
 export async function getFavicons(url: string, options: Options = {
 	method: 'request',
 	timeout: 5000
 }): Promise<Favicon[]>{
-	// ensure there is a valid url
-	url = processURL(url);
+	return new Promise(async(resolve, reject) => {
+		// ensure there is a valid url
+		url = processURL(url);
+	
+		if(isRelativeURL(url)) throw new Error("Only absolute urls are valid.");
 
-	if(isRelativeURL(url)) throw new Error("Only absolute urls are valid.");
-
-	if(options.timeout) timeout = options.timeout;
-	return options.method === 'request' ? 
-		await withRequest(url) :
-		await withBrowser(url);
+		try{
+			const result = options.method === 'browser' ? await withBrowser(url) : await withRequest(url, options.timeout);
+			result.length ? resolve(result) : reject(new Error("No favicons found."));
+		}catch(error){
+			reject(error);
+		}
+	})
 }
 
 export async function getFavicon(url: string, {
@@ -37,9 +40,9 @@ export async function getFavicon(url: string, {
 	return favicons.sort((a, b) => b.size - a.size)[0];
 }
 
-async function withRequest(url: string) {
+async function withRequest(url: string, timeout: number = 5000) {
 	const response = await fetch(url, timeout);
-	if(!response.ok) throw new Error(`Failed to fetch ${url}`);
+	if(!response || !response.ok) throw new Error(`Failed to fetch ${url}`);
 	const html = await response.text();
 
 	const $ = cheerio.load(html);

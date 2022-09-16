@@ -1,7 +1,7 @@
 {
 	"name": "@andresmarpz/favicons",
 	"author": "andresmarpz",
-	"version": "1.0.0",
+	"version": "1.0.2",
 	"description": "Utility package to get favicons from the web.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.modern.mjs",
@@ -13,7 +13,7 @@
 	"license": "GNU3",
 	"scripts": {
 		"build": "microbundle build --compress --no-sourcemap --format modern,cjs --tsconfig tsconfig.build.json --target node",
-		"test": "jest",
+		"test": "jest --forceExit",
 		"dev": "nodemon src/index.ts",
 		"start": "ts-node src/index.ts",
 		"prepublish": "npm test && tsc",
