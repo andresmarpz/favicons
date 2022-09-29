@@ -68,3 +68,5 @@ async function withBrowser(url: string): Promise<Favicon[]> {
 
 	return requestFavicons(url, hrefs);
 }
+
+export type { Favicon } from './types';
