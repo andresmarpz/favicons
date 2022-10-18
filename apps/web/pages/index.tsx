@@ -1,45 +1,29 @@
-import { Favicon } from "@andresmarpz/favicons";
 import type { NextPage } from "next";
-import { FormEvent, useState } from "react";
+import NavLink from "../ui/NavLink";
+import SearchBox from "../ui/SearchBox";
 
 const Home: NextPage = () => {
-	const [loading, setLoading] = useState(false);
-	const [url, setUrl] = useState("");
-	const [icons, setIcons] = useState<Favicon[]>();
-
-	const handleSearch = async (event: FormEvent) => {
-		event.preventDefault();
-
-		const { favicons } = await fetch("/api/icons?url=" + url).then((res) => res.json());
-		setIcons(favicons);
-	};
-
 	return (
-		<main className="p-4">
-			<h1 className="text-2xl text-black font-semibold mb-1">Favicons</h1>
+		<div className="p-4 max-w-3xl m-auto">
+		<header className="py-6 flex gap-2">
+			<NavLink href="#">F</NavLink>
+			<NavLink href="https://www.npmjs.com/package/@andresmarpz/favicons">npm</NavLink>
+			<NavLink href="#docs">docs</NavLink>
+		</header>
+		<main className="">
+			<h1 className="text-3xl text-black font-semibold mb-1">Favicons</h1>
 			<p>
-				Use <code className="rounded border px-1 py-[2px] bg-gray-100">@andresmarpz/favicons</code> to fetch
-				favicons from websites.
+				It&apos;s unreasonably hard to find a favicon for a website. This is a simple library to fetch and parse
+				every favicon from a URL. Ideally you would install{' '}
+				<code className="rounded border px-1 py-[2px] bg-gray-100">@andresmarpz/favicons</code> and use it in your 
+				project, but if you just want to try it out, you can use this page.
 			</p>
-			<div className="mt-4">
-				<p>Insert url</p>
-				<form onSubmit={handleSearch}>
-					<input
-						className="rounded border p-1"
-						type="text"
-						value={url}
-						onChange={(e) => setUrl(e.target.value)}
-					/>
-					<button className="rounded border p-1" type="submit">
-						Search
-					</button>
-				</form>
-			</div>
-			<div className="mt-4">
-				Icons:
-				{icons && icons.map((icon, index) => <div key={Math.random()}>{icon.url}</div>)}
+			<div className="mt-8">
+				<h2 className="text-xl text-black font-semibold mb-1">Search icons</h2>
+				<SearchBox/>
 			</div>
 		</main>
+		</div>
 	);
 };
 
