@@ -19,19 +19,25 @@ const SearchBox = () => {
 	const [focus, setFocus] = useState<boolean>(false);
 	const [url, setUrl] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(false);
 	const [icons, setIcons] = useState<Favicon[]>([]);
 
 	const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setError(false);
 
 		if (!url.length) return;
 
 		setLoading(true);
 		const res = await fetch(`/api/icons?${new URLSearchParams({ url })}`);
-		const data = await res.json();
-		setIcons(data.favicons);
+		if (!res.ok) setError(true);
+		else {
+			const data = await res.json();
+			setIcons(data.favicons);
+			setUrl("");
+			setFocus(false);
+		}
 		setLoading(false);
-		setUrl("");
 	};
 
 	return (
@@ -54,8 +60,9 @@ const SearchBox = () => {
 					onFocus={() => setFocus(true)}
 					onBlur={() => setFocus(false)}
 				/>
-				{// search button 
-				<button className="rounded border px-2 py-1">Search</button>
+				{
+					// search button
+					<button className="rounded border px-2 py-1">Search</button>
 				}
 				{loading && (
 					<div className="flex items-center justify-center absolute inset-0 w-full h-full">
@@ -79,12 +86,11 @@ const SearchBox = () => {
 						}
 						<span className="flex flex-col gap-1">
 							<span className="text-sm text-gray-500">{icon.url}</span>
-							<span className="text-sm text-gray-500">
-								{icon.size / 1000}kb
-							</span>
+							<span className="text-sm text-gray-500">{icon.size / 1000}kb</span>
 						</span>
 					</div>
 				))}
+				{error && <div className="rounded border border-red-300 bg-red-200 p-2">There was an error fetching the url.</div>}
 			</div>
 		</div>
 	);

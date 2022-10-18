@@ -13,7 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		return;
 	}
 
-	const favicons = await getFavicons(url.toString());
-
-	res.status(200).send({ favicons });
+	try{
+		const favicons = await getFavicons(url.toString());
+		res.status(200).send({ favicons });
+	}catch(e){
+		res.status(500).json({ favicons: undefined });
+	}
 }
