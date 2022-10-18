@@ -1,9 +1,14 @@
 import type { NextPage } from "next";
+import Head from "next/head";
 import NavLink from "../ui/NavLink";
 import SearchBox from "../ui/SearchBox";
 
 const Home: NextPage = () => {
 	return (
+		<>
+		<Head>
+			<title>Favicons</title>
+		</Head>
 		<div className="p-4 max-w-3xl m-auto">
 		<header className="py-6 flex gap-2">
 			<NavLink href="#">F</NavLink>
@@ -24,6 +29,7 @@ const Home: NextPage = () => {
 			</div>
 		</main>
 		</div>
+		</>
 	);
 };
 
