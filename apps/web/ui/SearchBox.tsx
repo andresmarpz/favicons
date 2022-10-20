@@ -85,7 +85,7 @@ const SearchBox = () => {
 							/>
 						}
 						<span className="flex flex-col gap-1">
-							<span className="text-sm text-gray-500 break-all">{icon.url}</span>
+							<span className="text-sm text-gray-500 breakword">{icon.url}</span>
 							<span className="text-sm text-gray-500">{icon.size / 1000}kb</span>
 						</span>
 					</div>

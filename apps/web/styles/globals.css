@@ -22,3 +22,10 @@ a {
 .border-shadow {
 	box-shadow: hsl(0, 0%, 0%) 0px 0px 0px 1.5px;
 }
+
+.breakword {
+	display: inline-block;
+	width: 100%;
+	overflow-wrap: anywhere;
+	word-break: break-all;
+}
