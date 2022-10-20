@@ -25,7 +25,6 @@ a {
 
 .breakword {
 	display: inline-block;
-	width: 100%;
 	overflow-wrap: anywhere;
 	word-break: break-all;
 }
