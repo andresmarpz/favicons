@@ -1,6 +1,6 @@
 import { Favicon } from "@andresmarpz/favicons";
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import Spinner from "./svgs/Spinner";
 
 const MagnifyingGlass = () => {
@@ -21,6 +21,7 @@ const SearchBox = () => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(false);
 	const [icons, setIcons] = useState<Favicon[]>([]);
+	const lastUrl = useRef<string>();
 
 	const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -34,6 +35,7 @@ const SearchBox = () => {
 		else {
 			const data = await res.json();
 			setIcons(data.favicons);
+			lastUrl.current = url;
 			setUrl("");
 			setFocus(false);
 		}
@@ -70,7 +72,8 @@ const SearchBox = () => {
 					</div>
 				)}
 			</form>
-			<div className="flex flex-col gap-2 mt-2">
+			<div className="flex flex-col gap-2 mt-2 overflow-x-auto">
+				{icons.length > 0 && <p>Request to <code className="rounded border px-1 py-[2px] bg-gray-100">/api/icons?url={lastUrl.current}</code></p>}
 				{icons.map((icon, idx) => (
 					<div className="rounded border p-2 flex flex-wrap items-center gap-3" key={"icon-" + idx}>
 						{
