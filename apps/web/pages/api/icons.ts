@@ -2,21 +2,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Favicon, getFavicons } from "@andresmarpz/favicons";
 
-type Data = {
-	favicons: Favicon[] | undefined;
-};
+type Data = Favicon[] | undefined;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 	const { url } = req.query;
 	if (!url) {
-		res.status(400).json({ favicons: undefined });
+		res.status(400).send(undefined)
 		return;
 	}
 
 	try{
 		const favicons = await getFavicons(url.toString());
-		res.status(200).send({ favicons });
+		res.status(200).send(favicons);
 	}catch(e){
-		res.status(500).json({ favicons: undefined });
+		res.status(500).send(undefined)
 	}
 }

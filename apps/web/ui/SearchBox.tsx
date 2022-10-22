@@ -34,7 +34,7 @@ const SearchBox = () => {
 		if (!res.ok) setError(true);
 		else {
 			const data = await res.json();
-			setIcons(data.favicons);
+			setIcons(data);
 			lastUrl.current = url;
 			setUrl("");
 			setFocus(false);
