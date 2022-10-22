@@ -45,8 +45,10 @@ const Docs: NextPage = () => {
 				</ul>
 				<pre className="rounded border px-4 py-2 bg-gray-100 mt-2">
 					<code className="text-black">
-						{`import favicons from "@andresmarpz/favicons";
-						`}
+{`import { getFavicons } from "@andresmarpz/favicons";
+
+const favicons = await getFavicons("vercel.com");
+`}
 					</code>
 				</pre>
 			</main>
