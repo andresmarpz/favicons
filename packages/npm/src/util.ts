@@ -1,6 +1,5 @@
-import nodeFetch from 'node-fetch'
-import type { AbortSignal } from 'node-fetch/externals';
-import type { Response } from 'node-fetch';
+import nodeFetch from "node-fetch";
+import type { Response } from "node-fetch";
 
 export function processURL(url: string, removeParams: boolean = true): string {
 	if (isRelativeURL(url)) return url;
@@ -20,21 +19,15 @@ export function isRelativeURL(url: string): boolean {
 export function fetch(url: string, ms: number = 5000) {
 	return new Promise<Response | undefined>((resolve, reject) => {
 		const controller = new AbortController();
-		const signal = controller.signal as AbortSignal;
-
+		const signal = controller.signal;
 		const timeout = setTimeout(() => {
 			controller.abort();
 			reject(new Error(`Request timed out: ${url}`));
 		}, ms);
 
 		nodeFetch(url, { signal })
-			.then((response) => {
-				timeout.unref();
-				resolve(response);
-			})
-			.catch((error) => {
-				timeout.unref();
-				reject(error);
-			});
-	})
+			.then((response) => resolve(response))
+			.catch((error) => reject(error))
+			.finally(() => clearTimeout(timeout));
+	});
 }

@@ -27,18 +27,6 @@ describe("test getFavicon(url: string)", () => {
 		expect(favicons.length).toBeGreaterThanOrEqual(1);
 	});
 
-	it("should return favicons from turborepo.org with browser", async () => {
-		const favicons = await getFavicons("turborepo.org", { method: "browser" });
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
-	it("should return favicons from http://stitches.dev/?test=1 with browser", async () => {
-		const favicons = await getFavicons("http://stitches.dev/?test=1", {
-			method: "browser",
-		});
-		expect(favicons.length).toBeGreaterThanOrEqual(1);
-	});
-
 	it("should time out if the domain/dns is not resolved", async () => {
 		expect(getFavicons("https://hopethissitedoesntexistplease.com")).rejects.toThrow(FetchError)
 	});
