@@ -55,9 +55,4 @@ async function withRequest(url: string, timeout: number = 5000) {
 	return requestFavicons(url, hrefs);
 }
 
-(async() => {
-	const favicons = await getFavicons('https://www.google.com', { timeout: 5000 });
-	console.log(favicons);
-})()
-
 export type { Favicon } from "./types";
