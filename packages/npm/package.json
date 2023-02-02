@@ -1,7 +1,7 @@
 {
 	"name": "@andresmarpz/favicons",
 	"author": "Andrés Martínez <hello@andrs.me>",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "Utility package to get favicons from the web.",
 	"keywords": [
 		"favicon",
