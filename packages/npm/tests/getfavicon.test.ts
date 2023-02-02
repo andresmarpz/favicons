@@ -1,5 +1,4 @@
 import { getFavicons } from "../src";
-import { FetchError } from "node-fetch";
 
 describe("test getFavicon(url: string)", () => {
 	it("should return favicons from github.com", async () => {
@@ -28,14 +27,14 @@ describe("test getFavicon(url: string)", () => {
 	});
 
 	it("should time out if the domain/dns is not resolved", async () => {
-		expect(getFavicons("https://hopethissitedoesntexistplease.com")).rejects.toThrow(FetchError)
+		expect(getFavicons("https://hopethissitedoesntexistplease.com")).rejects.toThrow();
 	});
 
 	it("should time out if the website does not respond for too long", async () => {
-		expect(getFavicons("https://http://example.com:81/")).rejects.toThrow('Request timed out');
+		expect(getFavicons("https://http://example.com:81/")).rejects.toThrow("Request timed out");
 	}, 15000);
 
-	it('should time out with custom timeout', async () => {
-		expect(getFavicons("https://http://example.com:81/", { timeout: 1000 })).rejects.toThrow('Request timed out');
-	})
+	it("should time out with custom timeout", async () => {
+		expect(getFavicons("https://http://example.com:81/", { timeout: 1000 })).rejects.toThrow("Request timed out");
+	});
 });

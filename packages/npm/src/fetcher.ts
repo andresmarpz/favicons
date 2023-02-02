@@ -1,12 +1,12 @@
-import { fetch } from "./util";
+import { fetchWithTimeout } from "./util";
 import type { Favicon } from "./types";
 import { isRelativeURL, processURL } from "./util";
 
 const paths = ["/favicon.ico", "/favicon.png", "/favicon.svg", "/apple-touch-icon.png"];
 
 async function getFaviconFrom(url: string) {
-	const response = await fetch(url);
-	if(!response || !response.ok) return undefined;
+	const response = await fetchWithTimeout(url);
+	if (!response || !response.ok) return undefined;
 
 	// ensure there is a valid resource at the target url
 	// and that it's an image
@@ -14,7 +14,7 @@ async function getFaviconFrom(url: string) {
 	const isImage = contentType.startsWith("image/") || contentType.startsWith("application/ico");
 	if (!response.ok || !contentType || !isImage) return undefined;
 
-	const size = (await response.buffer()).byteLength;
+	const size = (await response.blob()).size;
 	const extension = url.split(".").pop() as Favicon["extension"];
 
 	return { url, size, extension } as Favicon;

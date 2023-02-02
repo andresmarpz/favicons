@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { fetch } from "./util";
+import { fetchWithTimeout } from "./util";
 import { processURL, isRelativeURL } from "./util";
 
 import { requestFavicons } from "./fetcher";
@@ -39,7 +39,7 @@ export async function getFavicon(url: string, options: Options): Promise<Favicon
 }
 
 async function withRequest(url: string, timeout: number = 5000) {
-	const response = await fetch(url, timeout);
+	const response = await fetchWithTimeout(url, timeout);
 	if (!response || !response.ok) throw new Error(`Failed to fetch ${url}`);
 	const html = await response.text();
 

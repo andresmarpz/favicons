@@ -1,7 +1,7 @@
 {
 	"name": "@andresmarpz/favicons",
 	"author": "Andrés Martínez <hello@andrs.me>",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"description": "Utility package to get favicons from the web.",
 	"keywords": [
 		"favicon",
@@ -45,7 +45,6 @@
 		"typescript": "^4.8.3"
 	},
 	"dependencies": {
-		"cheerio": "^1.0.0-rc.12",
-		"node-fetch": "^3.3.0"
+		"cheerio": "^1.0.0-rc.12"
 	}
 }

@@ -1,6 +1,3 @@
-import nodeFetch from "node-fetch";
-import type { Response } from "node-fetch";
-
 export function processURL(url: string, removeParams: boolean = true): string {
 	if (isRelativeURL(url)) return url;
 	if (url.startsWith("//")) url = "https:" + url;
@@ -16,7 +13,7 @@ export function isRelativeURL(url: string): boolean {
 /**
  * 	Use AbortController to timeout fetch requests
  */
-export function fetch(url: string, ms: number = 5000) {
+export function fetchWithTimeout(url: string, ms: number = 5000) {
 	return new Promise<Response | undefined>((resolve, reject) => {
 		const controller = new AbortController();
 		const signal = controller.signal;
@@ -25,7 +22,9 @@ export function fetch(url: string, ms: number = 5000) {
 			reject(new Error(`Request timed out: ${url}`));
 		}, ms);
 
-		nodeFetch(url, { signal })
+		fetch(url, {
+			signal,
+		})
 			.then((response) => resolve(response))
 			.catch((error) => reject(error))
 			.finally(() => clearTimeout(timeout));
