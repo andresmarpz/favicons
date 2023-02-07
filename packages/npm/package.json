@@ -1,19 +1,41 @@
 {
 	"name": "@andresmarpz/favicons",
-	"author": "Andrés Martínez <hello@andrs.me>",
+	"author": {
+		"name": "Andrés Martínez",
+		"email": "hello@andrs.me",
+		"url": "https://andrs.me"
+	},
 	"version": "1.0.8",
 	"description": "Utility package to get favicons from the web.",
 	"keywords": [
+		"ico",
+		"icon",
+		"icons",
 		"favicon",
 		"favicons",
 		"get",
-		"node"
+		"node",
+		"url",
+		"web",
+		"react",
+		"javascript",
+		"vanilla",
+		"package",
+		"fetch"
 	],
+	"homepage": "https://github.com/andresmarpz/favicons#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/andresmarpz/favicons.git"
+	},
+	"bugs": {
+		"url": "https://github.com/andresmarpz/favicons/issues",
+		"email": "hello@andrs.me"
+	},
 	"type": "module",
 	"source": "src/index.ts",
 	"main": "dist/index.cjs",
 	"module": "dist/index.modern.mjs",
-	"homepage": "https://github.com/andresmarpz/favicons#readme",
 	"exports": {
 		"types": "./dist/index.d.ts",
 		"require": "./dist/index.cjs",
@@ -23,7 +45,7 @@
 	"files": [
 		"dist"
 	],
-	"license": "GNU3",
+	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"build": "microbundle build --compress --no-sourcemap --format modern,cjs --tsconfig tsconfig.build.json --target node",
 		"test": "jest --forceExit",
