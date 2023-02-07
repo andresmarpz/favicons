@@ -81,7 +81,7 @@ export async function getFavicon(url: string, options: Options): Promise<Favicon
  * @param html - html string of a website or head element specifically (faster)
  * @returns string[] - array of favicon urls
  */
-export async function extractFavicons(html: string) {
+export function extractFavicons(html: string) {
 	const $ = cheerio.load(html);
 	const hrefs = rels
 		.map((rel) => {
@@ -99,7 +99,7 @@ async function withRequest(url: string, timeout: number = 5000) {
 	if (!response || !response.ok) throw new Error(`Failed to fetch ${url}`);
 	const html = await response.text();
 
-	const hrefs = await extractFavicons(html);
+	const hrefs = extractFavicons(html);
 
 	return getFaviconsFrom(hrefs, url);
 }
