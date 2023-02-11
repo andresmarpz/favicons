@@ -1,3 +1,5 @@
+import fetch, { Response } from 'node-fetch';
+
 export function processURL(url: string, removeParams: boolean = true): string {
 	if (isRelativeURL(url)) return url;
 	if (url.startsWith("//")) url = "https:" + url;
@@ -25,7 +27,7 @@ export function fetchWithTimeout(url: string, ms: number = 5000) {
 		fetch(url, {
 			signal,
 		})
-			.then((response) => resolve(response))
+			.then((response: Response) => resolve(response))
 			.catch((error) => reject(error))
 			.finally(() => clearTimeout(timeout));
 	});

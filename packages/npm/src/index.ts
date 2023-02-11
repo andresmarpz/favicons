@@ -96,7 +96,7 @@ export function extractFavicons(html: string) {
 
 async function withRequest(url: string, timeout: number = 5000) {
 	const response = await fetchWithTimeout(url, timeout);
-	if (!response || !response.ok) throw new Error(`Failed to fetch ${url}`);
+	if (!response || !response.ok) throw new Error(`Failed to fetch ${url}. Error code: ${response?.statusText}`);
 	const html = await response.text();
 
 	const hrefs = extractFavicons(html);
